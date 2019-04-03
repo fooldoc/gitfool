@@ -136,6 +136,19 @@ function checkout
 	fi
 }
 
+# 回滚到远端最新文件
+function revert
+{
+    params=$(echo "$@")
+    echo $params
+	if [ "$params" = "" ];then
+    	error "请填写回滚文件"
+        exit
+    fi
+    exec git -c core.quotepath=false -c log.showSignature=false rm --cached -f -- $params
+    exec git -c core.quotepath=false -c log.showSignature=false checkout HEAD -- $params
+}
+
 # 恢复数据
 function sync
 {
@@ -196,8 +209,12 @@ case $action in
 		cmd=$(echo sync $params)
 		eval $cmd
 		;;
+	revert)
+		cmd=$(echo revert $params)
+		eval $cmd
+		;;
 	help)
-		echo "Usage: $0 {update|commit|reset|checkout|log}"
+		echo "Usage: $0 {update|commit|reset|checkout|log|revert}"
 		echo ""
 		printf "%5s %-10s %s\n" '' update 获取最新内容到本地分支
 		printf "%5s %-10s %s\n" '' commit 记录变更到版本库并更新远程引用和相关的对象
@@ -205,6 +222,7 @@ case $action in
 		printf "%5s %-10s %s\n" '' checkout 检出一个分支或路径到工作区
 		printf "%5s %-10s %s\n" '' log 显示提交日志
 		printf "%5s %-10s %s\n" '' sync 恢复数据为最新版
+		printf "%5s %-10s %s\n" '' revert 恢复某个文件的最新代码
 		echo ""
 		printf "$GREEN"
 		echo "以下为GIT默认用法"

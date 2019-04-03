@@ -139,12 +139,16 @@ function checkout
 # 回滚到远端最新文件
 function revert
 {
+    git status -s| while read line
+   	do
+   		echo $line
+   	done
     params=$(echo "$@")
-    echo $params
 	if [ "$params" = "" ];then
     	error "请填写回滚文件"
         exit
     fi
+    exec rm -rf $params
     exec git -c core.quotepath=false -c log.showSignature=false rm --cached -f -- $params
     exec git -c core.quotepath=false -c log.showSignature=false checkout HEAD -- $params
 }

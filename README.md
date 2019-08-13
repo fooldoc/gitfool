@@ -1,8 +1,8 @@
-# git_tool
+# gitfool
 软连接
-sudo ln -s /web/git_tool/git_tool.sh /usr/local/bin/git_tool
+sudo ln -s gitfool.sh /usr/local/bin/gitfool
 
-git_tool
+gitfool-(git傻瓜工具)
 
       update     获取最新内容到本地分支
       reset      撤销提交记录到指定状态

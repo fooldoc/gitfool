@@ -45,7 +45,7 @@ function exec
 	$@
 }
 
-# 还原版本
+# 还原提交的版本
 function reset
 {
 	echo "以下为最近10次提交历史"
@@ -73,6 +73,21 @@ function reset
 			exec git reset --hard $realComId
 		fi
 	fi
+}
+
+# 撤销某次add记录
+function resetAdd
+{
+	    git status -s| while read line
+       	do
+       		echo $line
+       	done
+        params=$(echo "$@")
+    	if [ "$params" = "" ];then
+        	error "请填撤销某次add文件名称"
+            exit
+        fi
+        exec git reset HEAD $params
 }
 
 # 查看历史
@@ -161,6 +176,10 @@ case $action in
 	reset)
 		reset
 		;;
+	resetAdd)
+      cmd=$(echo resetAdd $params)
+      		eval $cmd
+        ;;
 	checkout)
 		cmd=$(echo checkout $params)
 		eval $cmd
@@ -186,10 +205,11 @@ case $action in
 		echo ""
 		printf "%5s %-10s %s\n" '' "update  获取最新内容到本地分支 示例：gitfool update"
 		printf "%5s %-10s %s\n" '' "reset  撤销提交记录到指定状态  示例：gitfool reset"
+		printf "%5s %-10s %s\n" '' "resetAdd  撤销add某个文件的状态(不会删除本地记录)  示例：gitfool resetAdd"
 		printf "%5s %-10s %s\n" '' "checkout 检出一个分支或路径到工作区 示例：gitfool checkout"
 		printf "%5s %-10s %s\n" '' "log 显示提交日志 示例：gitfool log"
 		printf "%5s %-10s %s\n" '' "revertAll 恢复数据为远程最新版 示例：gitfool revertAll . "
-		printf "%5s %-10s %s\n" '' "revert 恢复某个文件为远程最新版代码 示例：gitfool revert aa "
+		printf "%5s %-10s %s\n" '' "revert 恢复某个文件为远程最新版代码（注意会删除） 示例：gitfool revert aa "
 		echo ""
 		exit 1;;
 	*)
